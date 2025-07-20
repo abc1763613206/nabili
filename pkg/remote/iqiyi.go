@@ -16,15 +16,15 @@ const (
 )
 
 type IqiyiResponse struct {
-	Code int `json:"code"`
+	Code interface{} `json:"code"`
 	Data struct {
-		Country  string `json:"country"`
-		Province string `json:"province"`
-		City     string `json:"city"`
-		ISP      string `json:"isp"`
-		IP       string `json:"ip"`
+		CountryCN  string `json:"countryCN"`
+		ProvinceCN string `json:"provinceCN"`
+		CityCN     string `json:"cityCN"`
+		ISPCN      string `json:"ispCN"`
+		IP         string `json:"ip"`
 	} `json:"data"`
-	Message string `json:"message"`
+	Msg string `json:"msg"`
 }
 
 type IqiyiSource struct {
@@ -73,34 +73,48 @@ func (i *IqiyiSource) Find(query string, params ...string) (result fmt.Stringer,
 		return nil, fmt.Errorf("failed to unmarshal iqiyi response: %v", err)
 	}
 
-	if apiResp.Code != 0 {
-		return nil, fmt.Errorf("iqiyi API error: %s", apiResp.Message)
+	// Handle both string and numeric response codes
+	var codeStr string
+	var codeInt int
+	switch v := apiResp.Code.(type) {
+	case string:
+		codeStr = v
+	case float64:
+		codeInt = int(v)
+	case int:
+		codeInt = v
+	default:
+		return nil, fmt.Errorf("invalid response code type: %T", apiResp.Code)
+	}
+	
+	if codeStr != "0" && codeInt != 0 {
+		return nil, fmt.Errorf("iqiyi API error: %s", apiResp.Msg)
 	}
 
-	// Handle empty fields gracefully
+	// Handle empty fields gracefully and skip * values
 	location := ""
-	if apiResp.Data.Country != "" {
-		location = apiResp.Data.Country
+	if apiResp.Data.CountryCN != "" && apiResp.Data.CountryCN != "*" {
+		location = apiResp.Data.CountryCN
 	}
-	if apiResp.Data.Province != "" {
+	if apiResp.Data.ProvinceCN != "" && apiResp.Data.ProvinceCN != "*" {
 		if location != "" {
-			location += " " + apiResp.Data.Province
+			location += " " + apiResp.Data.ProvinceCN
 		} else {
-			location = apiResp.Data.Province
+			location = apiResp.Data.ProvinceCN
 		}
 	}
-	if apiResp.Data.City != "" {
+	if apiResp.Data.CityCN != "" && apiResp.Data.CityCN != "*" {
 		if location != "" {
-			location += " " + apiResp.Data.City
+			location += " " + apiResp.Data.CityCN
 		} else {
-			location = apiResp.Data.City
+			location = apiResp.Data.CityCN
 		}
 	}
-	if apiResp.Data.ISP != "" {
+	if apiResp.Data.ISPCN != "" && apiResp.Data.ISPCN != "*" {
 		if location != "" {
-			location += " " + apiResp.Data.ISP
+			location += " " + apiResp.Data.ISPCN
 		} else {
-			location = apiResp.Data.ISP
+			location = apiResp.Data.ISPCN
 		}
 	}
 

@@ -16,7 +16,7 @@ const (
 )
 
 type BaiduResponse struct {
-	Code int `json:"code"`
+	Code interface{} `json:"code"`
 	Data struct {
 		Continent  string `json:"continent"`
 		Country    string `json:"country"`
@@ -75,7 +75,21 @@ func (b *BaiduSource) Find(query string, params ...string) (result fmt.Stringer,
 		return nil, fmt.Errorf("failed to unmarshal baidu response: %v", err)
 	}
 
-	if apiResp.Code != 0 {
+	// Handle both string and numeric response codes
+	var codeStr string
+	var codeInt int
+	switch v := apiResp.Code.(type) {
+	case string:
+		codeStr = v
+	case float64:
+		codeInt = int(v)
+	case int:
+		codeInt = v
+	default:
+		return nil, fmt.Errorf("invalid response code type: %T", apiResp.Code)
+	}
+	
+	if codeStr != "Success" && codeInt != 0 {
 		return nil, fmt.Errorf("baidu API error: %s", apiResp.Msg)
 	}
 
