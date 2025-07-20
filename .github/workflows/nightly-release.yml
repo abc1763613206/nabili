@@ -1,0 +1,93 @@
+name: Nightly Release
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  nightly-build:
+    name: Nightly Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '^1.21'
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache go module
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Get dependencies and run tests
+        run: |
+          go test ./...
+
+      - name: Build nightly binaries
+        env:
+          NAME: nabili
+          BINDIR: bin
+        run: make -j releases && make sha256sum
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
+      - name: Get short commit SHA
+        id: sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Delete previous nightly release
+        uses: dev-drprasad/delete-tag-and-release@v1.0
+        with:
+          tag_name: nightly
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          delete_release: true
+        continue-on-error: true
+
+      - name: Create nightly release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: nightly
+          name: "Nightly Build (${{ steps.date.outputs.date }}-${{ steps.sha.outputs.sha }})"
+          body: |
+            This is an automated nightly build of nabili.
+            
+            **Build Date**: ${{ steps.date.outputs.date }}
+            **Commit**: ${{ github.sha }}
+            **Commit SHA**: ${{ steps.sha.outputs.sha }}
+            **Changes**: https://github.com/${{ github.repository }}/compare/nightly...${{ github.sha }}
+            
+            ## Downloads
+            
+            | Platform | File |
+            |----------|------|
+            | Windows x64 | nabili_windows_amd64.exe |
+            | Windows x86 | nabili_windows_386.exe |
+            | Windows arm64 | nabili_windows_arm64.exe |
+            | Linux x64 | nabili_linux_amd64 |
+            | Linux x86 | nabili_linux_386 |
+            | Linux arm64 | nabili_linux_arm64 |
+            | macOS x64 | nabili_darwin_amd64 |
+            | macOS arm64 | nabili_darwin_arm64 |
+            
+            ## Checksums
+            
+            See `nabili_checksums.txt` for SHA256 checksums.
+          files: bin/*
+          draft: false
+          prerelease: true
+          make_latest: false

@@ -24,7 +24,6 @@ func getLatestRelease() (*github.RepositoryRelease, error) {
 	rel, resp, err := client.Repositories.GetLatestRelease(ctx, constant.Owner, constant.Repo)
 	if err != nil {
 		if resp != nil && resp.StatusCode == 404 {
-			// 404 means repository not found or release not found. It's not an error here.
 			return nil, fmt.Errorf("repository or release not found")
 		}
 		return nil, fmt.Errorf("API returned an error response: %s", err)
@@ -32,7 +31,21 @@ func getLatestRelease() (*github.RepositoryRelease, error) {
 	if rel == nil {
 		return nil, fmt.Errorf("repository release is nil")
 	}
+	return rel, nil
+}
 
+func getNightlyRelease() (*github.RepositoryRelease, error) {
+	client = github.NewClient(httpClient)
+	rel, resp, err := client.Repositories.GetReleaseByTag(ctx, constant.Owner, constant.Repo, "nightly")
+	if err != nil {
+		if resp != nil && resp.StatusCode == 404 {
+			return nil, fmt.Errorf("nightly release not found")
+		}
+		return nil, fmt.Errorf("API returned an error response: %s", err)
+	}
+	if rel == nil {
+		return nil, fmt.Errorf("nightly release is nil")
+	}
 	return rel, nil
 }
 

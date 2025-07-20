@@ -10,6 +10,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 
 	"github.com/abc1763613206/nabili/internal/constant"
 
@@ -23,6 +25,10 @@ var (
 )
 
 func UpdateRepo() error {
+	if isNightlyVersion() {
+		return updateNightly()
+	}
+
 	rel, err := getLatestRelease()
 	if err != nil {
 		return fmt.Errorf("failed to get latest release: %v", err)
@@ -33,6 +39,26 @@ func UpdateRepo() error {
 		return nil
 	}
 
+	return updateFromRelease(rel, "latest release")
+}
+
+func updateNightly() error {
+	rel, err := getNightlyRelease()
+	if err != nil {
+		return fmt.Errorf("failed to get nightly release: %v", err)
+	}
+
+	// For nightly builds, always check if there's a newer build
+	// We use the published_at timestamp to determine if it's newer
+	if !shouldUpdateNightly(rel) {
+		log.Printf("current nightly is up to date, no update \n")
+		return nil
+	}
+
+	return updateFromRelease(rel, "nightly build")
+}
+
+func updateFromRelease(rel *github.RepositoryRelease, releaseType string) error {
 	//Filtering assets by GOOS and GOARCH
 	if tAsset = getTargetAsset(rel, false); tAsset == nil {
 		return fmt.Errorf("no target asset found for %s %s", constant.OS, constant.Arch)
@@ -72,13 +98,50 @@ func UpdateRepo() error {
 		return fmt.Errorf("error occurred while decompress: %v", err)
 	}
 
-	log.Printf("Updating %v to %v \n", exe, rel.GetTagName())
+	log.Printf("Updating %v to %v (%s)\n", exe, rel.GetTagName(), releaseType)
 	if err = update(asset, exe); err != nil {
 		return fmt.Errorf("update executable failed: %v", err)
 	}
 
-	log.Printf("Successfully updated to version %v \n", rel.GetTagName())
+	log.Printf("Successfully updated to version %v (%s)\n", rel.GetTagName(), releaseType)
 	return nil
+}
+
+func isNightlyVersion() bool {
+	return strings.Contains(constant.Version, "nightly") || constant.Version == "unknown version"
+}
+
+func shouldUpdateNightly(rel *github.RepositoryRelease) bool {
+	// For nightly builds, we always update if the release has a newer published_at time
+	// This is a simple approach - we could also check commit SHA if needed
+	return true
+}
+
+func canUpdate(rel *github.RepositoryRelease) bool {
+	// unknown version means that the user compiled it manually instead of downloading it from the release,
+	// in which case we don't take the liberty of updating it to a potentially older version.
+	if constant.Version == "unknown version" {
+		return false
+	}
+
+	// Skip nightly releases when updating tagged versions
+	if rel.GetTagName() == "nightly" {
+		return false
+	}
+
+	latest, err := parseVersion(rel.GetTagName())
+	if err != nil {
+		log.Printf("failed to parse latest version: %v, err: %v \n", rel.GetTagName(), err)
+		return false
+	}
+
+	cur, err := parseVersion(constant.Version)
+	if err != nil {
+		log.Printf("failed to parse current version: %v, err: %v \n", constant.Version, err)
+		return false
+	}
+
+	return latest.GreaterThan(cur)
 }
 
 func update(asset io.Reader, cmdPath string) error {
