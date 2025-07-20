@@ -9,8 +9,11 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/zu1k/nali/pkg/download"
-	"github.com/zu1k/nali/pkg/re"
+	"path/filepath"
+
+	"github.com/abc1763613206/nabili/internal/constant"
+	"github.com/abc1763613206/nabili/pkg/download"
+	"github.com/abc1763613206/nabili/pkg/re"
 	"gopkg.in/yaml.v2"
 )
 
@@ -46,6 +49,14 @@ func NewCDN(filePath string) (*CDN, error) {
 		log.Println("文件不存在，尝试从网络获取最新CDN数据库")
 		fileData, err = download.Download(filePath, DownloadUrls...)
 		if err != nil {
+			log.Printf("❌ CDN数据库下载失败！\n")
+			log.Printf("📁 请手动下载并保存到: %s\n", filepath.Join(constant.DataDirPath, "cdn.yml"))
+			log.Printf("🔗 下载地址: %v\n", DownloadUrls)
+			log.Printf("💡 操作步骤:\n")
+			log.Printf("   1. 从上述链接下载 cdn.yml 文件\n")
+			log.Printf("   2. 将下载的文件重命名为: cdn.yml\n")
+			log.Printf("   3. 复制到数据目录: %s\n", constant.DataDirPath)
+			log.Printf("   4. 重新运行 nabili\n")
 			return nil, err
 		}
 	} else {

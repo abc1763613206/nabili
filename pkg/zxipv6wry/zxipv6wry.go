@@ -9,7 +9,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/zu1k/nali/pkg/wry"
+	"github.com/abc1763613206/nabili/pkg/wry"
 )
 
 type ZXwry struct {

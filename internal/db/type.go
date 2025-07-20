@@ -3,15 +3,15 @@ package db
 import (
 	"log"
 
-	"github.com/zu1k/nali/pkg/cdn"
-	"github.com/zu1k/nali/pkg/common"
-	"github.com/zu1k/nali/pkg/dbif"
-	"github.com/zu1k/nali/pkg/geoip"
-	"github.com/zu1k/nali/pkg/ip2location"
-	"github.com/zu1k/nali/pkg/ip2region"
-	"github.com/zu1k/nali/pkg/ipip"
-	"github.com/zu1k/nali/pkg/qqwry"
-	"github.com/zu1k/nali/pkg/zxipv6wry"
+	"github.com/abc1763613206/nabili/pkg/cdn"
+	"github.com/abc1763613206/nabili/pkg/common"
+	"github.com/abc1763613206/nabili/pkg/dbif"
+	"github.com/abc1763613206/nabili/pkg/geoip"
+	"github.com/abc1763613206/nabili/pkg/ip2location"
+	"github.com/abc1763613206/nabili/pkg/ip2region"
+	"github.com/abc1763613206/nabili/pkg/ipip"
+	"github.com/abc1763613206/nabili/pkg/qqwry"
+	"github.com/abc1763613206/nabili/pkg/zxipv6wry"
 )
 
 type DB struct {

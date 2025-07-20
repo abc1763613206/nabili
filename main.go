@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/zu1k/nali/internal/constant"
+	"github.com/abc1763613206/nabili/internal/constant"
 
-	"github.com/zu1k/nali/cmd"
-	"github.com/zu1k/nali/internal/config"
+	"github.com/abc1763613206/nabili/cmd"
+	"github.com/abc1763613206/nabili/internal/config"
 
-	_ "github.com/zu1k/nali/internal/migration"
+	_ "github.com/abc1763613206/nabili/internal/migration"
 )
 
 func main() {

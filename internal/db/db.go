@@ -6,11 +6,17 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/zu1k/nali/pkg/cdn"
-	"github.com/zu1k/nali/pkg/dbif"
-	"github.com/zu1k/nali/pkg/geoip"
-	"github.com/zu1k/nali/pkg/qqwry"
-	"github.com/zu1k/nali/pkg/zxipv6wry"
+	"github.com/abc1763613206/nabili/pkg/cdn"
+	"github.com/abc1763613206/nabili/pkg/dbif"
+	"github.com/abc1763613206/nabili/pkg/geoip"
+	"github.com/abc1763613206/nabili/pkg/qqwry"
+	"github.com/abc1763613206/nabili/pkg/zxipv6wry"
+)
+
+// Command line database selections
+var (
+	CmdIPv4DB string
+	CmdIPv6DB string
 )
 
 func GetDB(typ dbif.QueryType) (db dbif.DB) {
@@ -26,6 +32,12 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 	var err error
 	switch typ {
 	case dbif.TypeIPv4:
+		// Command line flag takes highest priority
+		if CmdIPv4DB != "" {
+			db = getDbByName(CmdIPv4DB).get()
+			break
+		}
+		
 		selected := viper.GetString("selected.ipv4")
 		if selected != "" {
 			db = getDbByName(selected).get()
@@ -38,6 +50,12 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 			db, err = geoip.NewGeoIP(getDbByName("geoip").File)
 		}
 	case dbif.TypeIPv6:
+		// Command line flag takes highest priority
+		if CmdIPv6DB != "" {
+			db = getDbByName(CmdIPv6DB).get()
+			break
+		}
+		
 		selected := viper.GetString("selected.ipv6")
 		if selected != "" {
 			db = getDbByName(selected).get()

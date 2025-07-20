@@ -12,56 +12,74 @@ import (
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
 
-	"github.com/zu1k/nali/internal/constant"
-	"github.com/zu1k/nali/pkg/common"
-	"github.com/zu1k/nali/pkg/entity"
+	"github.com/abc1763613206/nabili/internal/constant"
+	"github.com/abc1763613206/nabili/internal/db"
+	"github.com/abc1763613206/nabili/pkg/common"
+	"github.com/abc1763613206/nabili/pkg/entity"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "nali",
+	Use:   "nabili",
 	Short: "An offline tool for querying IP geographic information",
 	Long: `An offline tool for querying IP geographic information.
 
-Find document on: https://github.com/zu1k/nali
+Find document on: https://github.com/zu1k/nabili
 
 #1 Query a simple IP address
 
-	$ nali 1.2.3.4
+	$ nabili 1.2.3.4
 
   or use pipe
 
-	$ echo IP 6.6.6.6 | nali
+	$ echo IP 6.6.6.6 | nabili
 
 #2 Query multiple IP addresses
 
-	$ nali 1.2.3.4 4.3.2.1 123.23.3.0
+	$ nabili 1.2.3.4 4.3.2.1 123.23.3.0
 
 #3 Interactive query
 
-	$ nali
+	$ nabili
 	123.23.23.23
 	123.23.23.23 [越南 越南邮电集团公司]
 	quit
 
 #4 Use with dig
 
-	$ dig nali.zu1k.com +short | nali
+	$ dig nabili.zu1k.com +short | nabili
 
 #5 Use with nslookup
 
-	$ nslookup nali.zu1k.com 8.8.8.8 | nali
+	$ nslookup nabili.zu1k.com 8.8.8.8 | nabili
 
 #6 Use with any other program
 
-	bash abc.sh | nali
+	bash abc.sh | nabili
 
 #7 IPV6 support
+
+#8 Specify database provider
+
+	$ nabili -4 geoip 1.2.3.4
+	$ nabili -6 geoip 2001:db8::1
+	$ nabili --db4 ip2region 8.8.8.8
+	$ nabili --db6 zxipv6wry 2001:db8::1
 `,
 	Version: constant.Version,
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		gbk, _ := cmd.Flags().GetBool("gbk")
 		isJson, _ := cmd.Flags().GetBool("json")
+		ipv4DB, _ := cmd.Flags().GetString("db4")
+		ipv6DB, _ := cmd.Flags().GetString("db6")
+
+		// Set command-line database selections
+		if ipv4DB != "" {
+			db.CmdIPv4DB = ipv4DB
+		}
+		if ipv6DB != "" {
+			db.CmdIPv6DB = ipv6DB
+		}
 
 		if len(args) == 0 {
 			stdin := bufio.NewScanner(os.Stdin)
@@ -102,4 +120,6 @@ func Execute() {
 func init() {
 	rootCmd.Flags().Bool("gbk", false, "Use GBK decoder")
 	rootCmd.Flags().BoolP("json", "j", false, "Output in JSON format")
+	rootCmd.Flags().StringP("db4", "4", "", "IPv4 database provider (qqwry, geoip, ip2region, dbip, ipip, ip2location)")
+	rootCmd.Flags().StringP("db6", "6", "", "IPv6 database provider (zxipv6wry, geoip, dbip, ipip, ip2location)")
 }

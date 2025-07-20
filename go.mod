@@ -1,5 +1,6 @@
-module github.com/zu1k/nali
+module github.com/abc1763613206/nabili
 
+// replace github.com/abc1763613206/nabili => ./nabili
 go 1.19
 
 require (

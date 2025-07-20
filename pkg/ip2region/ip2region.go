@@ -8,8 +8,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/zu1k/nali/pkg/download"
-	"github.com/zu1k/nali/pkg/wry"
+	"path/filepath"
+
+	"github.com/abc1763613206/nabili/internal/constant"
+	"github.com/abc1763613206/nabili/pkg/download"
+	"github.com/abc1763613206/nabili/pkg/wry"
 
 	"github.com/lionsoul2014/ip2region/binding/golang/xdb"
 )
@@ -29,6 +32,14 @@ func NewIp2Region(filePath string) (*Ip2Region, error) {
 		log.Println("文件不存在，尝试从网络获取最新 ip2region 库")
 		_, err = download.Download(filePath, DownloadUrls...)
 		if err != nil {
+			log.Printf("❌ ip2region 数据库下载失败！\n")
+			log.Printf("📁 请手动下载并保存到: %s\n", filepath.Join(constant.DataDirPath, "ip2region.xdb"))
+			log.Printf("🔗 下载地址: %v\n", DownloadUrls)
+			log.Printf("💡 操作步骤:\n")
+			log.Printf("   1. 从上述链接下载 ip2region.xdb 文件\n")
+			log.Printf("   2. 将下载的文件重命名为: ip2region.xdb\n")
+			log.Printf("   3. 复制到数据目录: %s\n", constant.DataDirPath)
+			log.Printf("   4. 重新运行 nabili\n")
 			return nil, err
 		}
 	}

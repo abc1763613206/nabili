@@ -3,12 +3,14 @@ package db
 import (
 	"errors"
 	"log"
+	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/zu1k/nali/pkg/download"
-	"github.com/zu1k/nali/pkg/qqwry"
-	"github.com/zu1k/nali/pkg/zxipv6wry"
+	"github.com/abc1763613206/nabili/internal/constant"
+	"github.com/abc1763613206/nabili/pkg/download"
+	"github.com/abc1763613206/nabili/pkg/qqwry"
+	"github.com/abc1763613206/nabili/pkg/zxipv6wry"
 )
 
 func UpdateDB(dbNames ...string) {
@@ -49,15 +51,27 @@ func getUpdateFuncByName(name string) (func() error, string) {
 				log.Printf("正在下载最新 %s 数据库...\n", db.Name)
 				data, err := download.Download(db.File, db.DownloadUrls...)
 				if err != nil {
-					log.Printf("%s 数据库下载失败，请手动下载解压后保存到本地: %s \n", db.Name, db.File)
-					log.Println("下载链接：", db.DownloadUrls)
+					log.Printf("❌ %s 数据库下载失败！\n", db.Name)
+				log.Printf("📁 请手动下载并保存到: %s\n", filepath.Join(constant.DataDirPath, db.File))
+					log.Printf("🔗 下载地址: %v\n", db.DownloadUrls)
+				log.Printf("💡 操作步骤:\n")
+				log.Printf("   1. 从上述链接下载文件\n")
+				log.Printf("   2. 将下载的文件重命名为: %s\n", db.File)
+				log.Printf("   3. 复制到数据目录: %s\n", constant.DataDirPath)
+				log.Printf("   4. 重新运行 nabili\n")
 					log.Println("error:", err)
 					return err
 				} else {
 					if check, ok := DbCheckFunc[db.Format]; ok {
 						if !check(data) {
-							log.Printf("%s 数据库下载失败，请手动下载解压后保存到本地: %s \n", db.Name, db.File)
-							log.Println("下载链接：", db.DownloadUrls)
+							log.Printf("❌ %s 数据库下载失败！\n", db.Name)
+				log.Printf("📁 请手动下载并保存到: %s\n", filepath.Join(constant.DataDirPath, db.File))
+							log.Printf("🔗 下载地址: %v\n", db.DownloadUrls)
+				log.Printf("💡 操作步骤:\n")
+				log.Printf("   1. 从上述链接下载文件\n")
+				log.Printf("   2. 将下载的文件重命名为: %s\n", db.File)
+				log.Printf("   3. 复制到数据目录: %s\n", constant.DataDirPath)
+				log.Printf("   4. 重新运行 nabili\n")
 							return errors.New("数据库内容出错")
 						}
 					}

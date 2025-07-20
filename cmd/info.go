@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/zu1k/nali/internal/constant"
+	"github.com/abc1763613206/nabili/internal/constant"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -12,9 +12,9 @@ import (
 // infoCmd represents the info command
 var infoCmd = &cobra.Command{
 	Use:     "info",
-	Short:   "get the necessary information of nali",
-	Long:    `get the necessary information of nali`,
-	Example: "nali info",
+	Short:   "get the necessary information of nabili",
+	Long:    `get the necessary information of nabili`,
+	Example: "nabili info",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Nali Version:     ", constant.Version)
 		fmt.Println("Config Dir Path:  ", constant.ConfigDirPath)

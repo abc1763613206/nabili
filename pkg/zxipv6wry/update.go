@@ -5,22 +5,36 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/saracen/go7z"
-	"github.com/zu1k/nali/pkg/common"
+	"github.com/abc1763613206/nabili/internal/constant"
+	"github.com/abc1763613206/nabili/pkg/common"
 )
 
 func Download(filePath ...string) (data []byte, err error) {
 	data, err = getData()
 	if err != nil {
-		log.Printf("ZX IPv6数据库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
-		log.Println("下载链接： https://ip.zxinc.org/ip.7z")
+		log.Printf("❌ ZX IPv6数据库下载失败！\n")
+		log.Printf("📁 请手动下载并保存到: %s\n", filepath.Join(constant.DataDirPath, "zxipv6wry.db"))
+		log.Printf("🔗 下载地址: https://ip.zxinc.org/ip.7z\n")
+		log.Printf("💡 操作步骤:\n")
+		log.Printf("   1. 从上述链接下载 ip.7z 文件\n")
+		log.Printf("   2. 解压文件，找到 zxipv6wry.db\n")
+		log.Printf("   3. 将 zxipv6wry.db 复制到数据目录: %s\n", constant.DataDirPath)
+		log.Printf("   4. 重新运行 nabili\n")
 		return
 	}
 
 	if !CheckFile(data) {
-		log.Printf("ZX IPv6数据库下载出错，请手动下载解压后保存到本地: %s \n", filePath)
-		log.Println("下载链接： https://ip.zxinc.org/ip.7z")
+		log.Printf("❌ ZX IPv6数据库下载出错！\n")
+		log.Printf("📁 请重新下载并保存到: %s\n", filepath.Join(constant.DataDirPath, "zxipv6wry.db"))
+		log.Printf("🔗 下载地址: https://ip.zxinc.org/ip.7z\n")
+		log.Printf("💡 操作步骤:\n")
+		log.Printf("   1. 从上述链接下载 ip.7z 文件\n")
+		log.Printf("   2. 解压文件，找到 zxipv6wry.db\n")
+		log.Printf("   3. 将 zxipv6wry.db 复制到数据目录: %s\n", constant.DataDirPath)
+		log.Printf("   4. 重新运行 nabili\n")
 		return nil, errors.New("数据库下载内容出错")
 	}
 

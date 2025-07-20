@@ -8,8 +8,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/zu1k/nali/internal/constant"
-	"github.com/zu1k/nali/pkg/common"
+	"github.com/abc1763613206/nabili/internal/constant"
+	"github.com/abc1763613206/nabili/pkg/common"
 
 	"github.com/google/go-github/v55/github"
 )

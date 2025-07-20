@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/google/martian/log"
-	"github.com/zu1k/nali/internal/constant"
+	"github.com/abc1763613206/nabili/internal/constant"
 )
 
 func migration2v6() {
