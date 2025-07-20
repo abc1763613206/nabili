@@ -129,5 +129,5 @@ func init() {
 	rootCmd.Flags().Bool("gbk", false, "Use GBK decoder")
 	rootCmd.Flags().BoolP("json", "j", false, "Output in JSON format")
 	rootCmd.Flags().StringP("db4", "4", "", "IPv4 database provider (qqwry, geoip, ip2region, dbip, ipip, ip2location, bili, ipsb, iqiyi, baidu)")
-	rootCmd.Flags().StringP("db6", "6", "", "IPv6 database provider (zxipv6wry, geoip, dbip, ipip, ip2location, bili, ipsb, iqiyi, baidu)"))
+	rootCmd.Flags().StringP("db6", "6", "", "IPv6 database provider (zxipv6wry, geoip, dbip, ipip, ip2location, bili, ipsb, iqiyi, baidu)")
 }

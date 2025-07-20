@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/abc1763613206/nabili/internal/constant"
 
@@ -115,33 +114,6 @@ func shouldUpdateNightly(rel *github.RepositoryRelease) bool {
 	// For nightly builds, we always update if the release has a newer published_at time
 	// This is a simple approach - we could also check commit SHA if needed
 	return true
-}
-
-func canUpdate(rel *github.RepositoryRelease) bool {
-	// unknown version means that the user compiled it manually instead of downloading it from the release,
-	// in which case we don't take the liberty of updating it to a potentially older version.
-	if constant.Version == "unknown version" {
-		return false
-	}
-
-	// Skip nightly releases when updating tagged versions
-	if rel.GetTagName() == "nightly" {
-		return false
-	}
-
-	latest, err := parseVersion(rel.GetTagName())
-	if err != nil {
-		log.Printf("failed to parse latest version: %v, err: %v \n", rel.GetTagName(), err)
-		return false
-	}
-
-	cur, err := parseVersion(constant.Version)
-	if err != nil {
-		log.Printf("failed to parse current version: %v, err: %v \n", constant.Version, err)
-		return false
-	}
-
-	return latest.GreaterThan(cur)
 }
 
 func update(asset io.Reader, cmdPath string) error {
