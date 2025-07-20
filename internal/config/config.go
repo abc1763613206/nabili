@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/abc1763613206/nabili/internal/db"
+	"github.com/abc1763613206/nabili/internal/migration"
 )
 
 func ReadConfig(basePath string) {
@@ -29,6 +30,9 @@ func ReadConfig(basePath string) {
 	_ = viper.BindEnv("selected.ipv6", "NALI_DB_IP6")
 	_ = viper.BindEnv("selected.cdn", "NALI_DB_CDN")
 	_ = viper.BindEnv("selected.lang", "NALI_LANG")
+
+	// Auto-migrate remote sources to existing configurations
+	migration.AutoMigrateRemoteSources()
 
 	dbList := db.List{}
 	err = viper.UnmarshalKey("databases", &dbList)

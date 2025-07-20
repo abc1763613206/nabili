@@ -11,6 +11,7 @@ import (
 	"github.com/abc1763613206/nabili/pkg/ip2region"
 	"github.com/abc1763613206/nabili/pkg/ipip"
 	"github.com/abc1763613206/nabili/pkg/qqwry"
+	"github.com/abc1763613206/nabili/pkg/remote"
 	"github.com/abc1763613206/nabili/pkg/zxipv6wry"
 )
 
@@ -49,6 +50,19 @@ func (d *DB) get() (db dbif.DB) {
 		db, err = ip2location.NewIP2Location(filePath)
 	case FormatCDNYml:
 		db, err = cdn.NewCDN(filePath)
+	case FormatRemote:
+		switch d.Name {
+		case "bili":
+			db = remote.NewBiliSource()
+		case "ipsb":
+			db = remote.NewIpsbSource()
+		case "iqiyi":
+			db = remote.NewIqiyiSource()
+		case "baidu":
+			db = remote.NewBaiduSource()
+		default:
+			panic("Remote source not supported!")
+		}
 	default:
 		panic("DB format not supported!")
 	}
@@ -70,6 +84,7 @@ const (
 	FormatIPIP               = "ipip"
 	FormatIP2Region          = "ip2region"
 	FormatIP2Location        = "ip2location"
+	FormatRemote             = "remote"
 
 	FormatCDNYml = "cdn-yml"
 )

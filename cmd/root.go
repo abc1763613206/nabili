@@ -23,7 +23,7 @@ var rootCmd = &cobra.Command{
 	Short: "An offline tool for querying IP geographic information",
 	Long: `An offline tool for querying IP geographic information.
 
-Find document on: https://github.com/zu1k/nabili
+Find document on: https://github.com/abc1763613206/nabili
 
 #1 Query a simple IP address
 
@@ -64,6 +64,14 @@ Find document on: https://github.com/zu1k/nabili
 	$ nabili -6 geoip 2001:db8::1
 	$ nabili --db4 ip2region 8.8.8.8
 	$ nabili --db6 zxipv6wry 2001:db8::1
+	$ nabili -4 bili 8.8.8.8
+	$ nabili -6 bili 240e:b1:a810:2011::a1
+	$ nabili -4 ipsb 8.8.8.8
+	$ nabili -6 ipsb 240e:b1:a810:2011::a1
+	$ nabili -4 iqiyi 8.8.8.8
+	$ nabili -6 iqiyi 240e:b1:a810:2011::a1
+	$ nabili -4 baidu 8.8.8.8
+	$ nabili -6 baidu 240e:b1:a810:2011::a1
 `,
 	Version: constant.Version,
 	Args:    cobra.MinimumNArgs(0),
@@ -120,6 +128,6 @@ func Execute() {
 func init() {
 	rootCmd.Flags().Bool("gbk", false, "Use GBK decoder")
 	rootCmd.Flags().BoolP("json", "j", false, "Output in JSON format")
-	rootCmd.Flags().StringP("db4", "4", "", "IPv4 database provider (qqwry, geoip, ip2region, dbip, ipip, ip2location)")
-	rootCmd.Flags().StringP("db6", "6", "", "IPv6 database provider (zxipv6wry, geoip, dbip, ipip, ip2location)")
+	rootCmd.Flags().StringP("db4", "4", "", "IPv4 database provider (qqwry, geoip, ip2region, dbip, ipip, ip2location, bili, ipsb, iqiyi, baidu)")
+	rootCmd.Flags().StringP("db6", "6", "", "IPv6 database provider (zxipv6wry, geoip, dbip, ipip, ip2location, bili, ipsb, iqiyi, baidu)"))
 }

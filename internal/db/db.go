@@ -104,6 +104,7 @@ func Find(typ dbif.QueryType, query string) *Result {
 			}
 		}
 	}
+
 	db := GetDB(typ)
 	result, err := db.Find(query)
 	if err != nil {

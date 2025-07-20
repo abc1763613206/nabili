@@ -86,5 +86,33 @@ func GetDefaultDBList() List {
 			Types:        TypesCDN,
 			DownloadUrls: cdn.DownloadUrls,
 		},
+		&DB{
+			Name:      "bili",
+			Format:    FormatRemote,
+			File:      "",
+			Languages: LanguagesZH,
+			Types:     TypesIP,
+		},
+		&DB{
+			Name:      "ipsb",
+			Format:    FormatRemote,
+			File:      "",
+			Languages: LanguagesEN,
+			Types:     TypesIP,
+		},
+		&DB{
+			Name:      "iqiyi",
+			Format:    FormatRemote,
+			File:      "",
+			Languages: LanguagesZH,
+			Types:     TypesIP,
+		},
+		&DB{
+			Name:      "baidu",
+			Format:    FormatRemote,
+			File:      "",
+			Languages: LanguagesZH,
+			Types:     TypesIP,
+		},
 	}
 }
