@@ -127,14 +127,24 @@ func (m *TypeMap) From(dbs List) {
 }
 
 func getDbByName(name string) (db *DB) {
+	return getDbByNameWithFallback(name, true)
+}
+
+func getDbByNameStrict(name string) (db *DB) {
+	return getDbByNameWithFallback(name, false)
+}
+
+func getDbByNameWithFallback(name string, allowFallback bool) (db *DB) {
 	if dbInfo, found := NameDBMap[name]; found {
 		return dbInfo
 	}
 
-	defaultNameDBMap := NameMap{}
-	defaultNameDBMap.From(GetDefaultDBList())
-	if dbInfo, found := defaultNameDBMap[name]; found {
-		return dbInfo
+	if allowFallback {
+		defaultNameDBMap := NameMap{}
+		defaultNameDBMap.From(GetDefaultDBList())
+		if dbInfo, found := defaultNameDBMap[name]; found {
+			return dbInfo
+		}
 	}
 
 	log.Fatalf("DB with name %s not found!\n", name)

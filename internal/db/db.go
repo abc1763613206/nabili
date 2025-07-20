@@ -34,7 +34,7 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 	case dbif.TypeIPv4:
 		// Command line flag takes highest priority
 		if CmdIPv4DB != "" {
-			db = getDbByName(CmdIPv4DB).get()
+			db = getDbByNameStrict(CmdIPv4DB).get()
 			break
 		}
 		
@@ -52,7 +52,7 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 	case dbif.TypeIPv6:
 		// Command line flag takes highest priority
 		if CmdIPv6DB != "" {
-			db = getDbByName(CmdIPv6DB).get()
+			db = getDbByNameStrict(CmdIPv6DB).get()
 			break
 		}
 		
