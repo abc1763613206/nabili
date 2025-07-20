@@ -1,4 +1,4 @@
-NAME=nali
+NAME=nabili
 BINDIR=bin
 VERSION=$(shell git describe --tags --always --dirty 2>/dev/null || echo "nightly-$(shell git rev-parse --short HEAD)")
 GOBUILD=CGO_ENABLED=0 go build -trimpath -ldflags '-X "github.com/abc1763613206/nabili/internal/constant.Version=$(VERSION)" -w -s'

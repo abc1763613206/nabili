@@ -16,7 +16,7 @@ var infoCmd = &cobra.Command{
 	Long:    `get the necessary information of nabili`,
 	Example: "nabili info",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Nali Version:     ", constant.Version)
+		fmt.Println("Nabili Version:     ", constant.Version)
 		fmt.Println("Config Dir Path:  ", constant.ConfigDirPath)
 		fmt.Println("DB Data Dir Path: ", constant.DataDirPath)
 
